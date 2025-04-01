@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package com.example.social_network;
+
+
+message Post {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string creator_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
+  bool is_private = 7;
+  repeated string tags = 8;
+}
+
+message CreatePostRequest {
+  // Поля для создания можно передавать напрямую:
+  string title = 1;
+  string description = 2;
+  string creator_id = 3;
+  bool is_private = 4;
+  repeated string tags = 5;
+}
+
+message CreatePostResponse {
+  Post post = 1;
+}
+
+// Удаление поста
+message DeletePostRequest {
+  string id = 1;
+}
+
+message DeletePostResponse {
+  bool success = 1;
+}
+
+message UpdatePostRequest {
+  string id = 1;     // Какой пост обновляем
+  string title = 2;
+  string description = 3;
+  bool is_private = 4;
+  repeated string tags = 5;
+}
+
+//Обновленный пост
+message UpdatePostResponse {
+  Post post = 1;
+}
+
+// Получение поста по ID
+message GetPostByIdRequest {
+  string id = 1;
+}
+
+
+message GetPostByIdResponse {
+  Post post = 1;
+}
+
+// Пагинированный список постов
+message GetPostsRequest {
+  int32 page = 1;        // Номер страницы
+  int32 page_size = 2;   // Количество записей на странице
+}
+
+message GetPostsResponse {
+  repeated Post posts = 1;
+  int32 total_count = 2; // Общее количество постов (для расчёта количества страниц)
+  int32 page = 3;        // Текущая страница
+  int32 page_size = 4;   // Размер страницы
+}
+
+message Empty {}
+
+
+service PostService {
+  // Создание поста
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse);
+
+  // Удаление поста
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
+
+  // Обновление поста
+  rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse);
+
+  // Получение поста по ID
+  rpc GetPostById(GetPostByIdRequest) returns (GetPostByIdResponse);
+
+  // Получение пагинированного списка постов
+  rpc GetPosts(GetPostsRequest) returns (GetPostsResponse);
+
+  rpc DebugGetAllPosts(Empty) returns (GetPostsResponse);
+}
